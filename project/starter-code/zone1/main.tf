@@ -41,10 +41,6 @@ locals {
     aws = aws.usw1
   }
  }
-provider "aws" {
-  alias  = "usw1"
-  region = "us-west-1"
-}
 
 output "vpc_id" {
    value = module.vpc_west.vpc_id

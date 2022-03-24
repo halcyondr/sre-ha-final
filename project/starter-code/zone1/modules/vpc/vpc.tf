@@ -49,8 +49,3 @@ resource "aws_vpc" "this" {
      var.public_subnet_tags
    )
  }
-
- provider "aws" {
-  alias  = "usw1"
-  region = "us-west-1"
-}
