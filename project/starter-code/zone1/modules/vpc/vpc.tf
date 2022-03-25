@@ -49,3 +49,12 @@ resource "aws_vpc" "this" {
      var.public_subnet_tags
    )
  }
+
+ terraform {
+    required_providers {
+        aws = {
+            source  = "hashicorp/aws"
+            version = ">= 2.7.0"
+        }
+    }
+}
