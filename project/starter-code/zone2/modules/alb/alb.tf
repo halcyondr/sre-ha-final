@@ -1,9 +1,8 @@
 resource "aws_lb_target_group" "udacity" {
-  name     = "udacity-lb-tg"
+  name     = "udacity-lb-tg-w"
   port     = 80
   protocol = "HTTP"
   vpc_id   = var.vpc_id
-#  vpc_id   = data.terraform_remote_state.vpc.outputs.vpc_id 
 }
 
 resource "aws_lb_target_group_attachment" "udacity" {
