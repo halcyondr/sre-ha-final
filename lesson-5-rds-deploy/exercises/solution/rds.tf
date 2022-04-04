@@ -10,6 +10,10 @@ module "project_rds_s" {
   providers = {
     aws = aws.usw1
   }
+  provider "aws" {
+  alias  = "usw1"
+  region = "us-west-1"
+}
   private_subnet_ids = module.vpc_west.private_subnet_ids
   vpc_id = module.vpc_west.vpc_id
 }
