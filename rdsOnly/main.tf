@@ -30,7 +30,7 @@ locals {
 
    account_owner = local.name
    name          = "${local.name}-project"
-   azs           = ["us-west-1a","us-west-1b"]
+   azs           = ["us-west-1b","us-west-1a"]
    private_subnet_tags = {
      "kubernetes.io/role/internal-elb" = 1
    }
@@ -40,7 +40,6 @@ locals {
   providers = {
     aws = aws.usw1
   }
- 
  }
 
 output "vpc_id" {
@@ -53,4 +52,4 @@ output "vpc_id" {
 
  output "public_subnet_ids" {
    value = module.vpc_west.public_subnet_ids
- }
+ } 
