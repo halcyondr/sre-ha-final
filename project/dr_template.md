@@ -5,7 +5,9 @@ us-east-2a, us-east-2b, us-east-2c
 us-west-1a, us-west-1b
 
 ## Servers and Clusters
-1 VM 
+3 Ubuntu Web Servers in each availability region
+1 2-node cluster in each availability region
+1 2 node RDS cluster in each availability region
 
 ### Table 1.1 Summary
 | Asset      | Purpose           | Size                                                                   | Qty                                                             | DR                                                                                                           |
@@ -34,3 +36,6 @@ List steps you would perform to setup the infrastructure in the other region. It
 
 ## Steps:
 You won't actually perform these steps, but write out what you would do to "fail-over" your application and database cluster to the other region. Think about all the pieces that were setup and how you would use those in the other region
+1) Failover the Ubuntu web servers by using Route53 to direct traffic from the public DNS to the load balancer in the alternate region
+2) Promote the EKS cluster in the secondary region
+3) Promote the out of region copy of the RDS database using the RDS console in the region where the secondary cluster is located
