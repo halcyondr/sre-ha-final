@@ -1,0 +1,1545 @@
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = "monitoring"
+              + from_port        = 9100
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 9100
+            },
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = "ssh port"
+              + from_port        = 22
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 22
+            },
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = "web port"
+              + from_port        = 80
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 80
+            },
+        ]
+      + name                   = "ec2_sg"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Name" = "ec2_sg"
+        }
+      + tags_all               = {
+          + "Name"      = "ec2_sg"
+          + "Terraform" = "true"
+        }
+      + vpc_id                 = "vpc-0d5c3a43c1248bc11"
+    }
+
+  # module.project_eks.aws_eks_cluster.cluster will be created
+  + resource "aws_eks_cluster" "cluster" {
+      + arn                   = (known after apply)
+      + certificate_authority = (known after apply)
+      + created_at            = (known after apply)
+      + endpoint              = (known after apply)
+      + id                    = (known after apply)
+      + identity              = (known after apply)
+      + name                  = "udacity-cluster"
+      + platform_version      = (known after apply)
+      + role_arn              = "arn:aws:iam::201412368106:role/app-udacity-eks-cluster-role"
+      + status                = (known after apply)
+      + tags_all              = {
+          + "Name"      = "udacity"
+          + "Terraform" = "true"
+        }
+      + version               = "1.21"
+
+      + kubernetes_network_config {
+          + ip_family         = (known after apply)
+          + service_ipv4_cidr = (known after apply)
+        }
+
+      + vpc_config {
+          + cluster_security_group_id = (known after apply)
+          + endpoint_private_access   = false
+          + endpoint_public_access    = true
+          + public_access_cidrs       = (known after apply)
+          + security_group_ids        = (known after apply)
+          + subnet_ids                = [
+              + "subnet-00b678f1279e32158",
+              + "subnet-0f052aad9b1b1ed22",
+            ]
+          + vpc_id                    = (known after apply)
+        }
+    }
+
+  # module.project_eks.aws_eks_node_group.node will be created
+  + resource "aws_eks_node_group" "node" {
+      + ami_type               = (known after apply)
+      + arn                    = (known after apply)
+      + capacity_type          = (known after apply)
+      + cluster_name           = "udacity-cluster"
+      + disk_size              = (known after apply)
+      + id                     = (known after apply)
+      + instance_types         = [
+          + "t3.medium",
+        ]
+      + node_group_name        = "app-udacity-node-group"
+      + node_group_name_prefix = (known after apply)
+      + node_role_arn          = "arn:aws:iam::201412368106:role/app-udacity-eks-node-role"
+      + release_version        = (known after apply)
+      + resources              = (known after apply)
+      + status                 = (known after apply)
+      + subnet_ids             = [
+          + "subnet-00b678f1279e32158",
+          + "subnet-0f052aad9b1b1ed22",
+        ]
+      + tags                   = {
+          + "Name" = "eks-udacity-nodes"
+        }
+      + tags_all               = {
+          + "Name"      = "eks-udacity-nodes"
+          + "Terraform" = "true"
+        }
+      + version                = (known after apply)
+
+      + scaling_config {
+          + desired_size = 2
+          + max_size     = 2
+          + min_size     = 1
+        }
+
+      + update_config {
+          + max_unavailable            = (known after apply)
+          + max_unavailable_percentage = (known after apply)
+        }
+    }
+
+  # module.project_eks.aws_iam_role_policy_attachment.cluster_AmazonEKSCloudwatchPolicy will be created
+  + resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSCloudwatchPolicy" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::201412368106:policy/app-udacity-eks-cluster-role-cloudwatch-policy"
+      + role       = "app-udacity-eks-node-role"
+    }
+
+  # module.project_eks.aws_iam_role_policy_attachment.cluster_AmazonEKSClusterPolicy will be created
+  + resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSClusterPolicy" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+      + role       = "app-udacity-eks-cluster-role"
+    }
+
+  # module.project_eks.aws_iam_role_policy_attachment.cluster_AmazonEKSServicePolicy will be created
+  + resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSServicePolicy" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+      + role       = "app-udacity-eks-cluster-role"
+    }
+
+  # module.project_eks.aws_iam_role_policy_attachment.node_AmazonEC2ContainerRegistryReadOnly will be created
+  + resource "aws_iam_role_policy_attachment" "node_AmazonEC2ContainerRegistryReadOnly" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+      + role       = "app-udacity-eks-node-role"
+    }
+
+  # module.project_eks.aws_iam_role_policy_attachment.node_AmazonEKSWorkerNodePolicy will be created
+  + resource "aws_iam_role_policy_attachment" "node_AmazonEKSWorkerNodePolicy" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+      + role       = "app-udacity-eks-node-role"
+    }
+
+  # module.project_eks.aws_iam_role_policy_attachment.node_AmazonEKS_CNI_Policy will be created
+  + resource "aws_iam_role_policy_attachment" "node_AmazonEKS_CNI_Policy" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+      + role       = "app-udacity-eks-node-role"
+    }
+
+  # module.project_eks.aws_iam_role_policy_attachment.node_CloudWatchAgentServerPolicy will be created
+  + resource "aws_iam_role_policy_attachment" "node_CloudWatchAgentServerPolicy" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+      + role       = "app-udacity-eks-node-role"
+    }
+
+  # module.project_eks.aws_iam_role_policy_attachment.node_harmony_policy_attachment will be created
+  + resource "aws_iam_role_policy_attachment" "node_harmony_policy_attachment" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::201412368106:policy/app-udacity-instance-policy"
+      + role       = "app-udacity-eks-node-role"
+    }
+
+  # module.project_eks.aws_security_group.eks-cluster will be created
+  + resource "aws_security_group" "eks-cluster" {
+      + arn                    = (known after apply)
+      + description            = "Managed by Terraform"
+      + egress                 = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = ""
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+            },
+        ]
+      + id                     = (known after apply)
+      + ingress                = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = ""
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+            },
+        ]
+      + name                   = "SG-eks-cluster"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags_all               = {
+          + "Name"      = "udacity"
+          + "Terraform" = "true"
+        }
+      + vpc_id                 = "vpc-0d5c3a43c1248bc11"
+    }
+
+  # module.vpc.aws_eip.nat[0] will be created
+  + resource "aws_eip" "nat" {
+      + allocation_id        = (known after apply)
+      + association_id       = (known after apply)
+      + carrier_ip           = (known after apply)
+      + customer_owned_ip    = (known after apply)
+      + domain               = (known after apply)
+      + id                   = (known after apply)
+      + instance             = (known after apply)
+      + network_border_group = (known after apply)
+      + network_interface    = (known after apply)
+      + private_dns          = (known after apply)
+      + private_ip           = (known after apply)
+      + public_dns           = (known after apply)
+      + public_ip            = (known after apply)
+      + public_ipv4_pool     = (known after apply)
+      + tags                 = {
+          + "Name" = "udacity-project-us-west-1b"
+        }
+      + tags_all             = {
+          + "Name"      = "udacity-project-us-west-1b"
+          + "Terraform" = "true"
+        }
+      + vpc                  = true
+    }
+
+  # module.vpc.aws_internet_gateway.this[0] will be created
+  + resource "aws_internet_gateway" "this" {
+      + arn      = (known after apply)
+      + id       = (known after apply)
+      + owner_id = (known after apply)
+      + tags     = {
+          + "Name" = "udacity-project"
+        }
+      + tags_all = {
+          + "Name"      = "udacity-project"
+          + "Terraform" = "true"
+        }
+      + vpc_id   = (known after apply)
+    }
+
+  # module.vpc.aws_nat_gateway.this[0] will be created
+  + resource "aws_nat_gateway" "this" {
+      + allocation_id        = (known after apply)
+      + connectivity_type    = "public"
+      + id                   = (known after apply)
+      + network_interface_id = (known after apply)
+      + private_ip           = (known after apply)
+      + public_ip            = (known after apply)
+      + subnet_id            = (known after apply)
+      + tags                 = {
+          + "Name" = "udacity-project-us-west-1b"
+        }
+      + tags_all             = {
+          + "Name"      = "udacity-project-us-west-1b"
+          + "Terraform" = "true"
+        }
+    }
+
+  # module.vpc.aws_route.private_nat_gateway[0] will be created
+  + resource "aws_route" "private_nat_gateway" {
+      + destination_cidr_block = "0.0.0.0/0"
+      + id                     = (known after apply)
+      + instance_id            = (known after apply)
+      + instance_owner_id      = (known after apply)
+      + nat_gateway_id         = (known after apply)
+      + network_interface_id   = (known after apply)
+      + origin                 = (known after apply)
+      + route_table_id         = (known after apply)
+      + state                  = (known after apply)
+
+      + timeouts {
+          + create = "5m"
+        }
+    }
+
+  # module.vpc.aws_route.private_nat_gateway[1] will be created
+  + resource "aws_route" "private_nat_gateway" {
+      + destination_cidr_block = "0.0.0.0/0"
+      + id                     = (known after apply)
+      + instance_id            = (known after apply)
+      + instance_owner_id      = (known after apply)
+      + nat_gateway_id         = (known after apply)
+      + network_interface_id   = (known after apply)
+      + origin                 = (known after apply)
+      + route_table_id         = (known after apply)
+      + state                  = (known after apply)
+
+      + timeouts {
+          + create = "5m"
+        }
+    }
+
+  # module.vpc.aws_route.public_internet_gateway[0] will be created
+  + resource "aws_route" "public_internet_gateway" {
+      + destination_cidr_block = "0.0.0.0/0"
+      + gateway_id             = (known after apply)
+      + id                     = (known after apply)
+      + instance_id            = (known after apply)
+      + instance_owner_id      = (known after apply)
+      + network_interface_id   = (known after apply)
+      + origin                 = (known after apply)
+      + route_table_id         = (known after apply)
+      + state                  = (known after apply)
+
+      + timeouts {
+          + create = "5m"
+        }
+    }
+
+  # module.vpc.aws_route.public_internet_gateway[1] will be created
+  + resource "aws_route" "public_internet_gateway" {
+      + destination_cidr_block = "0.0.0.0/0"
+      + gateway_id             = (known after apply)
+      + id                     = (known after apply)
+      + instance_id            = (known after apply)
+      + instance_owner_id      = (known after apply)
+      + network_interface_id   = (known after apply)
+      + origin                 = (known after apply)
+      + route_table_id         = (known after apply)
+      + state                  = (known after apply)
+
+      + timeouts {
+          + create = "5m"
+        }
+    }
+
+  # module.vpc.aws_route_table.private[0] will be created
+  + resource "aws_route_table" "private" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + route            = (known after apply)
+      + tags             = {
+          + "Name" = "udacity-project-private-us-west-1b"
+        }
+      + tags_all         = {
+          + "Name"      = "udacity-project-private-us-west-1b"
+          + "Terraform" = "true"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # module.vpc.aws_route_table.private[1] will be created
+  + resource "aws_route_table" "private" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + route            = (known after apply)
+      + tags             = {
+          + "Name" = "udacity-project-private-us-west-1c"
+        }
+      + tags_all         = {
+          + "Name"      = "udacity-project-private-us-west-1c"
+          + "Terraform" = "true"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # module.vpc.aws_route_table.public[0] will be created
+  + resource "aws_route_table" "public" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + route            = (known after apply)
+      + tags             = {
+          + "Name" = "udacity-project-public"
+        }
+      + tags_all         = {
+          + "Name"      = "udacity-project-public"
+          + "Terraform" = "true"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.private[0] will be created
+  + resource "aws_route_table_association" "private" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.private[1] will be created
+  + resource "aws_route_table_association" "private" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.public[0] will be created
+  + resource "aws_route_table_association" "public" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.public[1] will be created
+  + resource "aws_route_table_association" "public" {
+      + id             = (known after apply)
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.private[0] will be created
+  + resource "aws_subnet" "private" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "us-west-1b"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.100.1.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Name"                            = "udacity-project-private-us-west-1b"
+          + "kubernetes.io/role/internal-elb" = "1"
+        }
+      + tags_all                                       = {
+          + "Name"                            = "udacity-project-private-us-west-1b"
+          + "Terraform"                       = "true"
+          + "kubernetes.io/role/internal-elb" = "1"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.private[1] will be created
+  + resource "aws_subnet" "private" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "us-west-1c"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.100.2.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Name"                            = "udacity-project-private-us-west-1c"
+          + "kubernetes.io/role/internal-elb" = "1"
+        }
+      + tags_all                                       = {
+          + "Name"                            = "udacity-project-private-us-west-1c"
+          + "Terraform"                       = "true"
+          + "kubernetes.io/role/internal-elb" = "1"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.public[0] will be created
+  + resource "aws_subnet" "public" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "us-west-1b"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.100.10.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = true
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Name"                   = "udacity-project-public-us-west-1b"
+          + "kubernetes.io/role/elb" = "1"
+        }
+      + tags_all                                       = {
+          + "Name"                   = "udacity-project-public-us-west-1b"
+          + "Terraform"              = "true"
+          + "kubernetes.io/role/elb" = "1"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.public[1] will be created
+  + resource "aws_subnet" "public" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "us-west-1c"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.100.11.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = true
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Name"                   = "udacity-project-public-us-west-1c"
+          + "kubernetes.io/role/elb" = "1"
+        }
+      + tags_all                                       = {
+          + "Name"                   = "udacity-project-public-us-west-1c"
+          + "Terraform"              = "true"
+          + "kubernetes.io/role/elb" = "1"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.vpc.aws_vpc.this will be created
+  + resource "aws_vpc" "this" {
+      + arn                                  = (known after apply)
+      + cidr_block                           = "10.100.0.0/16"
+      + default_network_acl_id               = (known after apply)
+      + default_route_table_id               = (known after apply)
+      + default_security_group_id            = (known after apply)
+      + dhcp_options_id                      = (known after apply)
+      + enable_classiclink                   = (known after apply)
+      + enable_classiclink_dns_support       = (known after apply)
+      + enable_dns_hostnames                 = true
+      + enable_dns_support                   = true
+      + id                                   = (known after apply)
+      + instance_tenancy                     = "default"
+      + ipv6_association_id                  = (known after apply)
+      + ipv6_cidr_block                      = (known after apply)
+      + ipv6_cidr_block_network_border_group = (known after apply)
+      + main_route_table_id                  = (known after apply)
+      + owner_id                             = (known after apply)
+      + tags                                 = {
+          + "Name" = "udacity-project"
+        }
+      + tags_all                             = {
+          + "Name"      = "udacity-project"
+          + "Terraform" = "true"
+        }
+    }
+
+Plan: 41 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + account_id  = "201412368106"
+  + caller_arn  = "arn:aws:sts::201412368106:assumed-role/voclabs/user1832834=bc7e946c-6f1b-11ec-bd64-8f63e5bad355"
+  + caller_user = "AROAS5ZI423VLWO7JDJR6:user1832834=bc7e946c-6f1b-11ec-bd64-8f63e5bad355"
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+module.vpc.aws_eip.nat[0]: Creating...
+module.project_eks.aws_iam_role_policy_attachment.cluster_AmazonEKSCloudwatchPolicy: Creating...
+module.project_eks.aws_iam_role_policy_attachment.node_AmazonEKSWorkerNodePolicy: Creating...
+module.project_eks.aws_iam_role_policy_attachment.node_AmazonEC2ContainerRegistryReadOnly: Creating...
+module.project_eks.aws_iam_role_policy_attachment.cluster_AmazonEKSServicePolicy: Creating...
+module.project_eks.aws_iam_role_policy_attachment.node_AmazonEKS_CNI_Policy: Creating...
+module.project_eks.aws_iam_role_policy_attachment.cluster_AmazonEKSClusterPolicy: Creating...
+module.project_alb.aws_lb_target_group.udacity: Creating...
+module.project_eks.aws_security_group.eks-cluster: Creating...
+module.project_ec2.aws_security_group.ec2_sg: Creating...
+module.project_eks.aws_iam_role_policy_attachment.cluster_AmazonEKSCloudwatchPolicy: Creation complete after 0s [id=app-udacity-eks-node-role-20220518174120032900000002]
+module.project_eks.aws_iam_role_policy_attachment.cluster_AmazonEKSClusterPolicy: Creation complete after 0s [id=app-udacity-eks-cluster-role-20220518174120034800000003]
+module.project_eks.aws_iam_role_policy_attachment.node_CloudWatchAgentServerPolicy: Creating...
+module.project_eks.aws_iam_role_policy_attachment.node_AmazonEKSWorkerNodePolicy: Creation complete after 0s [id=app-udacity-eks-node-role-20220518174120032500000001]
+module.vpc.aws_vpc.this: Creating...
+module.project_eks.aws_iam_role_policy_attachment.cluster_AmazonEKSServicePolicy: Creation complete after 0s [id=app-udacity-eks-cluster-role-20220518174120040100000006]
+module.project_eks.aws_iam_role_policy_attachment.node_AmazonEKS_CNI_Policy: Creation complete after 0s [id=app-udacity-eks-node-role-20220518174120037500000004]
+module.project_eks.aws_iam_role_policy_attachment.node_harmony_policy_attachment: Creating...
+module.project_eks.aws_iam_role_policy_attachment.node_AmazonEC2ContainerRegistryReadOnly: Creation complete after 0s [id=app-udacity-eks-node-role-20220518174120038300000005]
+module.project_eks.aws_iam_role_policy_attachment.node_CloudWatchAgentServerPolicy: Creation complete after 0s [id=app-udacity-eks-node-role-20220518174120112200000007]
+module.project_eks.aws_iam_role_policy_attachment.node_harmony_policy_attachment: Creation complete after 0s [id=app-udacity-eks-node-role-20220518174120119700000008]
+module.vpc.aws_eip.nat[0]: Creation complete after 0s [id=eipalloc-0e8af589d8f20dbde]
+module.project_alb.aws_lb_target_group.udacity: Creation complete after 1s [id=arn:aws:elasticloadbalancing:us-west-1:201412368106:targetgroup/udacity-lb-tg-w/efaeb5f4596bba45]
+module.project_eks.aws_security_group.eks-cluster: Creation complete after 3s [id=sg-07c2430f776e6d6eb]
+module.project_ec2.aws_security_group.ec2_sg: Creation complete after 3s [id=sg-0354a61b29ea253cf]
+module.project_eks.aws_eks_cluster.cluster: Creating...
+module.project_alb.aws_lb.udacity: Creating...
+module.project_ec2.aws_instance.ubuntu[1]: Creating...
+module.project_ec2.aws_instance.ubuntu[0]: Creating...
+module.project_ec2.aws_instance.ubuntu[2]: Creating...
+module.vpc.aws_vpc.this: Still creating... [10s elapsed]
+module.vpc.aws_vpc.this: Creation complete after 12s [id=vpc-04a06b069fdac16a5]
+module.vpc.aws_subnet.public[0]: Creating...
+module.vpc.aws_subnet.public[1]: Creating...
+module.vpc.aws_route_table.public[0]: Creating...
+module.vpc.aws_route_table.private[1]: Creating...
+module.vpc.aws_subnet.private[0]: Creating...
+module.vpc.aws_internet_gateway.this[0]: Creating...
+module.vpc.aws_route_table.public[0]: Creation complete after 1s [id=rtb-0df313f190f071088]
+module.vpc.aws_route_table.private[0]: Creating...
+module.vpc.aws_route_table.private[1]: Creation complete after 1s [id=rtb-07708f247f75a6b6e]
+module.vpc.aws_subnet.private[1]: Creating...
+module.project_eks.aws_eks_cluster.cluster: Still creating... [10s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [10s elapsed]
+module.project_ec2.aws_instance.ubuntu[1]: Still creating... [10s elapsed]
+module.project_ec2.aws_instance.ubuntu[0]: Still creating... [10s elapsed]
+module.project_ec2.aws_instance.ubuntu[2]: Still creating... [10s elapsed]
+module.vpc.aws_internet_gateway.this[0]: Creation complete after 1s [id=igw-0634a06f3a8750e81]
+module.vpc.aws_route.public_internet_gateway[1]: Creating...
+module.vpc.aws_route.public_internet_gateway[0]: Creating...
+module.vpc.aws_route_table.private[0]: Creation complete after 0s [id=rtb-06ae33eb949bf625b]
+module.vpc.aws_subnet.private[0]: Creation complete after 1s [id=subnet-009f72f9216e160b7]
+module.vpc.aws_route.public_internet_gateway[0]: Creation complete after 0s [id=r-rtb-0df313f190f0710881080289494]
+module.vpc.aws_route.public_internet_gateway[1]: Creation complete after 0s [id=r-rtb-0df313f190f0710881080289494]
+module.project_ec2.aws_instance.ubuntu[0]: Creation complete after 12s [id=i-07693a92fadde0f57]
+module.project_ec2.aws_instance.ubuntu[1]: Creation complete after 12s [id=i-0227e47daa248c6ae]
+module.project_ec2.aws_instance.ubuntu[2]: Creation complete after 12s [id=i-0af410ba2874ec104]
+module.project_alb.aws_lb_target_group_attachment.udacity[0]: Creating...
+module.project_alb.aws_lb_target_group_attachment.udacity[1]: Creating...
+module.project_alb.aws_lb_target_group_attachment.udacity[0]: Creation complete after 1s [id=arn:aws:elasticloadbalancing:us-west-1:201412368106:targetgroup/udacity-lb-tg-w/efaeb5f4596bba45-20220518174135622900000009]
+module.project_alb.aws_lb_target_group_attachment.udacity[1]: Creation complete after 1s [id=arn:aws:elasticloadbalancing:us-west-1:201412368106:targetgroup/udacity-lb-tg-w/efaeb5f4596bba45-2022051817413574220000000a]
+module.vpc.aws_subnet.public[0]: Still creating... [10s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [20s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [20s elapsed]
+module.vpc.aws_subnet.public[0]: Creation complete after 11s [id=subnet-0f09c31bfe5df8dfa]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [30s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [30s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [40s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [40s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [50s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [50s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [1m0s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [1m0s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [1m10s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [1m10s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [1m20s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [1m20s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [1m30s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [1m30s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [1m40s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [1m40s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [1m50s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [1m50s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [2m0s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [2m0s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [2m10s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [2m10s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [2m20s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [2m20s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [2m30s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [2m30s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [2m40s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [2m40s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [2m50s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [2m50s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [3m0s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [3m0s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [3m10s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [3m10s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [3m20s elapsed]
+module.project_alb.aws_lb.udacity: Still creating... [3m20s elapsed]
+module.project_alb.aws_lb.udacity: Creation complete after 3m23s [id=arn:aws:elasticloadbalancing:us-west-1:201412368106:loadbalancer/app/udacity-lb-tf/8e83b6cfbed00462]
+module.project_alb.aws_lb_listener.udacity: Creating...
+module.project_alb.aws_lb_listener.udacity: Creation complete after 0s [id=arn:aws:elasticloadbalancing:us-west-1:201412368106:listener/app/udacity-lb-tf/8e83b6cfbed00462/3be7290dbc0b152d]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [3m30s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [3m40s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [3m50s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [4m0s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [4m10s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [4m20s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [4m30s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [4m40s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [4m50s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [5m0s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [5m10s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [5m20s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [5m30s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [5m40s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [5m50s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [6m0s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [6m10s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [6m20s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [6m30s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [6m40s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [6m50s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [7m0s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [7m10s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [7m20s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [7m30s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [7m40s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [7m50s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [8m0s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [8m10s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Still creating... [8m20s elapsed]
+module.project_eks.aws_eks_cluster.cluster: Creation complete after 8m24s [id=udacity-cluster]
+data.aws_eks_cluster.cluster: Reading...
+data.aws_eks_cluster_auth.cluster: Reading...
+data.aws_eks_cluster_auth.cluster: Read complete after 0s [id=udacity-cluster]
+module.project_eks.aws_eks_node_group.node: Creating...
+data.aws_eks_cluster.cluster: Read complete after 0s [id=udacity-cluster]
+module.project_eks.aws_eks_node_group.node: Still creating... [10s elapsed]
+module.project_eks.aws_eks_node_group.node: Still creating... [20s elapsed]
+module.project_eks.aws_eks_node_group.node: Still creating... [30s elapsed]
+module.project_eks.aws_eks_node_group.node: Still creating... [40s elapsed]
+module.project_eks.aws_eks_node_group.node: Still creating... [50s elapsed]
+module.project_eks.aws_eks_node_group.node: Still creating... [1m0s elapsed]
+module.project_eks.aws_eks_node_group.node: Still creating... [1m10s elapsed]
+module.project_eks.aws_eks_node_group.node: Still creating... [1m20s elapsed]
+module.project_eks.aws_eks_node_group.node: Still creating... [1m30s elapsed]
+module.project_eks.aws_eks_node_group.node: Still creating... [1m40s elapsed]
+module.project_eks.aws_eks_node_group.node: Still creating... [1m50s elapsed]
+module.project_eks.aws_eks_node_group.node: Still creating... [2m0s elapsed]
+module.project_eks.aws_eks_node_group.node: Creation complete after 2m9s [id=udacity-cluster:app-udacity-node-group]
+kubernetes_namespace.udacity: Creating...
+kubernetes_service.grafana-external: Creating...
+kubernetes_namespace.udacity: Creation complete after 1s [id=udacity]
+╷
+│ Error: namespaces "monitoring" not found
+│ 
+│   with kubernetes_service.grafana-external,
+│   on project.tf line 10, in resource "kubernetes_service" "grafana-external":
+│   10:   resource "kubernetes_service" "grafana-external" {
+│ 
+╵
+╷
+│ Error: error creating EC2 Subnet: InvalidParameterValue: Value (us-west-1c) for parameter availabilityZone is invalid. Subnets can currently only be created in the following availability zones: us-west-1a, us-west-1b.
+│       status code: 400, request id: 7d776251-e149-441c-bd82-744aa95cc237
+│ 
+│   with module.vpc.aws_subnet.private[1],
+│   on modules/vpc/vpc.tf line 13, in resource "aws_subnet" "private":
+│   13:  resource "aws_subnet" "private" {
+│ 
+╵
+╷
+│ Error: error creating EC2 Subnet: InvalidParameterValue: Value (us-west-1c) for parameter availabilityZone is invalid. Subnets can currently only be created in the following availability zones: us-west-1a, us-west-1b.
+│       status code: 400, request id: f4540676-0b3e-4ee4-b824-a4bb133fb849
+│ 
+│   with module.vpc.aws_subnet.public[1],
+│   on modules/vpc/vpc.tf line 33, in resource "aws_subnet" "public":
+│   33:  resource "aws_subnet" "public" {
+│ 
+╵
+[cloudshell-user@ip-10-0-188-204 zone2]$ 
+│ 
+╵
+[cloudshell-user@ip-10-0-188-204 zone2]$ aws eks --region us-east-2 update-kubeconfig --name udacity-cluster
+Updated context arn:aws:eks:us-east-2:201412368106:cluster/udacity-cluster in /home/cloudshell-user/.kube/config
+[cloudshell-user@ip-10-0-188-204 zone2]$ aws eks --region us-west-1 update-kubeconfig --name udacity-cluster
+Added new context arn:aws:eks:us-west-1:201412368106:cluster/udacity-cluster to /home/cloudshell-user/.kube/config
+[cloudshell-user@ip-10-0-188-204 zone2]$ kubectl config use-context arn:aws:eks:us-west-1:201412368106:cluster/udacity-cluster
+Switched to context "arn:aws:eks:us-west-1:201412368106:cluster/udacity-cluster".
+[cloudshell-user@ip-10-0-188-204 zone2]$ [cloudshell-user@ip-10-0-188-204 zone2]$ terraform apply
+module.project_eks.aws_iam_role_policy_attachment.node_AmazonEKSWorkerNodePolicy: Refreshing state... [id=app-udacity-eks-node-role-20220518174120032500000001]
+module.vpc.aws_vpc.this: Refreshing state... [id=vpc-04a06b069fdac16a5]
+module.project_eks.aws_iam_role_policy_attachment.node_AmazonEC2ContainerRegistryReadOnly: Refreshing state... [id=app-udacity-eks-node-role-20220518174120038300000005]
+module.project_eks.aws_iam_role_policy_attachment.cluster_AmazonEKSServicePolicy: Refreshing state... [id=app-udacity-eks-cluster-role-20220518174120040100000006]
+module.project_ec2.aws_security_group.ec2_sg: Refreshing state... [id=sg-0354a61b29ea253cf]
+module.project_eks.aws_iam_role_policy_attachment.node_CloudWatchAgentServerPolicy: Refreshing state... [id=app-udacity-eks-node-role-20220518174120112200000007]
+module.project_eks.aws_iam_role_policy_attachment.cluster_AmazonEKSClusterPolicy: Refreshing state... [id=app-udacity-eks-cluster-role-20220518174120034800000003]
+module.vpc.aws_eip.nat[0]: Refreshing state... [id=eipalloc-0e8af589d8f20dbde]
+module.project_alb.aws_lb_target_group.udacity: Refreshing state... [id=arn:aws:elasticloadbalancing:us-west-1:201412368106:targetgroup/udacity-lb-tg-w/efaeb5f4596bba45]
+module.project_eks.aws_iam_role_policy_attachment.node_AmazonEKS_CNI_Policy: Refreshing state... [id=app-udacity-eks-node-role-20220518174120037500000004]
+module.project_eks.aws_security_group.eks-cluster: Refreshing state... [id=sg-07c2430f776e6d6eb]
+module.project_alb.aws_lb.udacity: Refreshing state... [id=arn:aws:elasticloadbalancing:us-west-1:201412368106:loadbalancer/app/udacity-lb-tf/8e83b6cfbed00462]
+module.project_ec2.aws_instance.ubuntu[1]: Refreshing state... [id=i-0227e47daa248c6ae]
+module.project_ec2.aws_instance.ubuntu[0]: Refreshing state... [id=i-07693a92fadde0f57]
+module.project_ec2.aws_instance.ubuntu[2]: Refreshing state... [id=i-0af410ba2874ec104]
+module.project_eks.aws_eks_cluster.cluster: Refreshing state... [id=udacity-cluster]
+module.project_alb.aws_lb_listener.udacity: Refreshing state... [id=arn:aws:elasticloadbalancing:us-west-1:201412368106:listener/app/udacity-lb-tf/8e83b6cfbed00462/3be7290dbc0b152d]
+module.project_eks.aws_iam_role_policy_attachment.cluster_AmazonEKSCloudwatchPolicy: Refreshing state... [id=app-udacity-eks-node-role-20220518174120032900000002]
+module.project_eks.aws_iam_role_policy_attachment.node_harmony_policy_attachment: Refreshing state... [id=app-udacity-eks-node-role-20220518174120119700000008]
+module.vpc.aws_subnet.private[0]: Refreshing state... [id=subnet-009f72f9216e160b7]
+module.vpc.aws_route_table.private[1]: Refreshing state... [id=rtb-07708f247f75a6b6e]
+module.vpc.aws_route_table.private[0]: Refreshing state... [id=rtb-06ae33eb949bf625b]
+module.vpc.aws_route_table.public[0]: Refreshing state... [id=rtb-0df313f190f071088]
+module.vpc.aws_internet_gateway.this[0]: Refreshing state... [id=igw-0634a06f3a8750e81]
+module.project_eks.aws_eks_node_group.node: Refreshing state... [id=udacity-cluster:app-udacity-node-group]
+module.vpc.aws_subnet.public[0]: Refreshing state... [id=subnet-0f09c31bfe5df8dfa]
+module.vpc.aws_route.public_internet_gateway[1]: Refreshing state... [id=r-rtb-0df313f190f0710881080289494]
+module.vpc.aws_route.public_internet_gateway[0]: Refreshing state... [id=r-rtb-0df313f190f0710881080289494]
+kubernetes_namespace.udacity: Refreshing state... [id=udacity]
+module.project_alb.aws_lb_target_group_attachment.udacity[1]: Refreshing state... [id=arn:aws:elasticloadbalancing:us-west-1:201412368106:targetgroup/udacity-lb-tg-w/efaeb5f4596bba45-2022051817413574220000000a]
+module.project_alb.aws_lb_target_group_attachment.udacity[0]: Refreshing state... [id=arn:aws:elasticloadbalancing:us-west-1:201412368106:targetgroup/udacity-lb-tg-w/efaeb5f4596bba45-20220518174135622900000009]
+
+Note: Objects have changed outside of Terraform
+
+Terraform detected the following changes made outside of Terraform since the last "terraform apply":
+
+  # kubernetes_namespace.udacity has changed
+  ~ resource "kubernetes_namespace" "udacity" {
+        id = "udacity"
+
+      ~ metadata {
+          + annotations      = {}
+          + labels           = {}
+            name             = "udacity"
+            # (3 unchanged attributes hidden)
+        }
+    }
+
+  # module.project_alb.aws_lb.udacity has changed
+  ~ resource "aws_lb" "udacity" {
+        id                         = "arn:aws:elasticloadbalancing:us-west-1:201412368106:loadbalancer/app/udacity-lb-tf/8e83b6cfbed00462"
+        name                       = "udacity-lb-tf"
+      + tags                       = {}
+        # (17 unchanged attributes hidden)
+
+
+        # (3 unchanged blocks hidden)
+    }
+
+  # module.project_alb.aws_lb_listener.udacity has changed
+  ~ resource "aws_lb_listener" "udacity" {
+        id                = "arn:aws:elasticloadbalancing:us-west-1:201412368106:listener/app/udacity-lb-tf/8e83b6cfbed00462/3be7290dbc0b152d"
+      + tags              = {}
+        # (5 unchanged attributes hidden)
+
+        # (1 unchanged block hidden)
+    }
+
+  # module.project_alb.aws_lb_target_group.udacity has changed
+  ~ resource "aws_lb_target_group" "udacity" {
+        id                                 = "arn:aws:elasticloadbalancing:us-west-1:201412368106:targetgroup/udacity-lb-tg-w/efaeb5f4596bba45"
+        name                               = "udacity-lb-tg-w"
+      + tags                               = {}
+        # (14 unchanged attributes hidden)
+
+
+        # (2 unchanged blocks hidden)
+    }
+
+  # module.project_eks.aws_eks_cluster.cluster has changed
+  ~ resource "aws_eks_cluster" "cluster" {
+      + enabled_cluster_log_types = []
+        id                        = "udacity-cluster"
+        name                      = "udacity-cluster"
+      + tags                      = {}
+        # (10 unchanged attributes hidden)
+
+
+        # (2 unchanged blocks hidden)
+    }
+
+  # module.project_eks.aws_eks_node_group.node has changed
+  ~ resource "aws_eks_node_group" "node" {
+        id              = "udacity-cluster:app-udacity-node-group"
+      + labels          = {}
+        tags            = {
+            "Name" = "eks-udacity-nodes"
+        }
+        # (14 unchanged attributes hidden)
+
+
+        # (2 unchanged blocks hidden)
+    }
+
+  # module.project_eks.aws_security_group.eks-cluster has changed
+  ~ resource "aws_security_group" "eks-cluster" {
+        id                     = "sg-07c2430f776e6d6eb"
+        name                   = "SG-eks-cluster"
+      + tags                   = {}
+        # (8 unchanged attributes hidden)
+    }
+
+  # module.vpc.aws_route_table.public[0] has changed
+  ~ resource "aws_route_table" "public" {
+        id               = "rtb-0df313f190f071088"
+      ~ route            = [
+          + {
+              + carrier_gateway_id         = ""
+              + cidr_block                 = "0.0.0.0/0"
+              + core_network_arn           = ""
+              + destination_prefix_list_id = ""
+              + egress_only_gateway_id     = ""
+              + gateway_id                 = "igw-0634a06f3a8750e81"
+              + instance_id                = ""
+              + ipv6_cidr_block            = ""
+              + local_gateway_id           = ""
+              + nat_gateway_id             = ""
+              + network_interface_id       = ""
+              + transit_gateway_id         = ""
+              + vpc_endpoint_id            = ""
+              + vpc_peering_connection_id  = ""
+            },
+        ]
+        tags             = {
+            "Name" = "udacity-project-public"
+        }
+        # (5 unchanged attributes hidden)
+    }
+
+
+Unless you have made equivalent changes to your configuration, or ignored the relevant attributes using ignore_changes, the following plan may include actions to undo or respond to these
+changes.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # kubernetes_service.grafana-external will be created
+  + resource "kubernetes_service" "grafana-external" {
+      + id                     = (known after apply)
+      + status                 = (known after apply)
+      + wait_for_load_balancer = true
+
+      + metadata {
+          + annotations      = {
+              + "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
+              + "service.beta.kubernetes.io/aws-load-balancer-type"            = "nlb"
+            }
+          + generation       = (known after apply)
+          + name             = "grafana-external"
+          + namespace        = "monitoring"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + cluster_ip                  = (known after apply)
+          + external_traffic_policy     = (known after apply)
+          + health_check_node_port      = (known after apply)
+          + ip_families                 = (known after apply)
+          + ip_family_policy            = (known after apply)
+          + publish_not_ready_addresses = false
+          + selector                    = {
+              + "app.kubernetes.io/name" = "grafana"
+            }
+          + session_affinity            = "None"
+          + type                        = "LoadBalancer"
+
+          + port {
+              + node_port   = (known after apply)
+              + port        = 80
+              + protocol    = "TCP"
+              + target_port = "3000"
+            }
+        }
+    }
+
+  # module.vpc.aws_nat_gateway.this[0] will be created
+  + resource "aws_nat_gateway" "this" {
+      + allocation_id        = "eipalloc-0e8af589d8f20dbde"
+      + connectivity_type    = "public"
+      + id                   = (known after apply)
+      + network_interface_id = (known after apply)
+      + private_ip           = (known after apply)
+      + public_ip            = (known after apply)
+      + subnet_id            = "subnet-0f09c31bfe5df8dfa"
+      + tags                 = {
+          + "Name" = "udacity-project-us-west-1b"
+        }
+      + tags_all             = {
+          + "Name"      = "udacity-project-us-west-1b"
+          + "Terraform" = "true"
+        }
+    }
+
+  # module.vpc.aws_route.private_nat_gateway[0] will be created
+  + resource "aws_route" "private_nat_gateway" {
+      + destination_cidr_block = "0.0.0.0/0"
+      + id                     = (known after apply)
+      + instance_id            = (known after apply)
+      + instance_owner_id      = (known after apply)
+      + nat_gateway_id         = (known after apply)
+      + network_interface_id   = (known after apply)
+      + origin                 = (known after apply)
+      + route_table_id         = "rtb-06ae33eb949bf625b"
+      + state                  = (known after apply)
+
+      + timeouts {
+          + create = "5m"
+        }
+    }
+
+  # module.vpc.aws_route.private_nat_gateway[1] will be created
+  + resource "aws_route" "private_nat_gateway" {
+      + destination_cidr_block = "0.0.0.0/0"
+      + id                     = (known after apply)
+      + instance_id            = (known after apply)
+      + instance_owner_id      = (known after apply)
+      + nat_gateway_id         = (known after apply)
+      + network_interface_id   = (known after apply)
+      + origin                 = (known after apply)
+      + route_table_id         = "rtb-07708f247f75a6b6e"
+      + state                  = (known after apply)
+
+      + timeouts {
+          + create = "5m"
+        }
+    }
+
+  # module.vpc.aws_route_table_association.private[0] will be created
+  + resource "aws_route_table_association" "private" {
+      + id             = (known after apply)
+      + route_table_id = "rtb-06ae33eb949bf625b"
+      + subnet_id      = "subnet-009f72f9216e160b7"
+    }
+
+  # module.vpc.aws_route_table_association.private[1] will be created
+  + resource "aws_route_table_association" "private" {
+      + id             = (known after apply)
+      + route_table_id = "rtb-07708f247f75a6b6e"
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.public[0] will be created
+  + resource "aws_route_table_association" "public" {
+      + id             = (known after apply)
+      + route_table_id = "rtb-0df313f190f071088"
+      + subnet_id      = "subnet-0f09c31bfe5df8dfa"
+    }
+
+  # module.vpc.aws_route_table_association.public[1] will be created
+  + resource "aws_route_table_association" "public" {
+      + id             = (known after apply)
+      + route_table_id = "rtb-0df313f190f071088"
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.private[1] will be created
+  + resource "aws_subnet" "private" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "us-west-1c"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.100.2.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Name"                            = "udacity-project-private-us-west-1c"
+          + "kubernetes.io/role/internal-elb" = "1"
+        }
+      + tags_all                                       = {
+          + "Name"                            = "udacity-project-private-us-west-1c"
+          + "Terraform"                       = "true"
+          + "kubernetes.io/role/internal-elb" = "1"
+        }
+      + vpc_id                                         = "vpc-04a06b069fdac16a5"
+    }
+
+  # module.vpc.aws_subnet.public[1] will be created
+  + resource "aws_subnet" "public" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "us-west-1c"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.100.11.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = true
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Name"                   = "udacity-project-public-us-west-1c"
+          + "kubernetes.io/role/elb" = "1"
+        }
+      + tags_all                                       = {
+          + "Name"                   = "udacity-project-public-us-west-1c"
+          + "Terraform"              = "true"
+          + "kubernetes.io/role/elb" = "1"
+        }
+      + vpc_id                                         = "vpc-04a06b069fdac16a5"
+    }
+
+Plan: 10 to add, 0 to change, 0 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+kubernetes_service.grafana-external: Creating...
+module.vpc.aws_subnet.private[1]: Creating...
+module.vpc.aws_subnet.public[1]: Creating...
+kubernetes_service.grafana-external: Creation complete after 4s [id=monitoring/grafana-external]
+╷
+│ Error: error creating EC2 Subnet: InvalidParameterValue: Value (us-west-1c) for parameter availabilityZone is invalid. Subnets can currently only be created in the following availability zones: us-west-1a, us-west-1b.
+│       status code: 400, request id: 731ba887-77c9-4bed-89e7-cf4ce5748bb0
+│ 
+│   with module.vpc.aws_subnet.private[1],
+│   on modules/vpc/vpc.tf line 13, in resource "aws_subnet" "private":
+│   13:  resource "aws_subnet" "private" {
+│ 
+╵
+╷
+│ Error: error creating EC2 Subnet: InvalidParameterValue: Value (us-west-1c) for parameter availabilityZone is invalid. Subnets can currently only be created in the following availability zones: us-west-1a, us-west-1b.
+│       status code: 400, request id: 2433e0f3-0fa5-4513-aba6-b82e3d54b379
+│ 
+│   with module.vpc.aws_subnet.public[1],
+│   on modules/vpc/vpc.tf line 33, in resource "aws_subnet" "public":
+│   33:  resource "aws_subnet" "public" {
+│ 
+╵
+[cloudshell-user@ip-10-0-188-204 zone2]$ cd ..
+[cloudshell-user@ip-10-0-188-204 starter-code]$ cd ..
+[cloudshell-user@ip-10-0-188-204 project]$ cd ..
+[cloudshell-user@ip-10-0-188-204 sre-ha-final]$ cd ..
+[cloudshell-user@ip-10-0-188-204 ~]$ rm -r sre-ha-final
+rm: remove write-protected regular file ‘sre-ha-final/.git/objects/pack/pack-60df75b35af54255aed59f4daa7d8aa30312317a.pack’? y
+rm: remove write-protected regular file ‘sre-ha-final/.git/objects/pack/pack-60df75b35af54255aed59f4daa7d8aa30312317a.idx’? y
+[cloudshell-user@ip-10-0-188-204 ~]$ git clone https://github.com/halcyondr/sre-ha-final.git
+Cloning into 'sre-ha-final'...
+remote: Enumerating objects: 1042, done.
+remote: Counting objects: 100% (1042/1042), done.
+remote: Compressing objects: 100% (482/482), done.
+remote: Total 1042 (delta 576), reused 987 (delta 542), pack-reused 0
+Receiving objects: 100% (1042/1042), 1.87 MiB | 23.61 MiB/s, done.
+Resolving deltas: 100% (576/576), done.
+[cloudshell-user@ip-10-0-188-204 ~]$ cd sre-ha-final
+[cloudshell-user@ip-10-0-188-204 sre-ha-final]$ cd project
+[cloudshell-user@ip-10-0-188-204 project]$ cd starter-code
+[cloudshell-user@ip-10-0-188-204 starter-code]$ cd zone2
+[cloudshell-user@ip-10-0-188-204 zone2]$ terraform init
+Initializing modules...
+- project_alb in modules/alb
+- project_ec2 in modules/ec2
+- project_eks in modules/eks
+- vpc in modules/vpc
+
+Initializing the backend...
+
+Successfully configured the backend "s3"! Terraform will automatically
+use this backend unless the backend configuration changes.
+
+Initializing provider plugins...
+- terraform.io/builtin/terraform is built in to Terraform
+- Finding latest version of hashicorp/kubernetes...
+- Finding latest version of hashicorp/aws...
+- Using hashicorp/kubernetes v2.11.0 from the shared cache directory
+- Using hashicorp/aws v4.14.0 from the shared cache directory
+
+Terraform has created a lock file .terraform.lock.hcl to record the provider
+selections it made above. Include this file in your version control repository
+so that Terraform can guarantee to make the same selections by default when
+you run "terraform init" in the future.
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+[cloudshell-user@ip-10-0-188-204 zone2]$ terraform apply
+module.vpc.aws_eip.nat[0]: Refreshing state... [id=eipalloc-0e8af589d8f20dbde]
+module.project_eks.aws_iam_role_policy_attachment.node_AmazonEKS_CNI_Policy: Refreshing state... [id=app-udacity-eks-node-role-20220518174120037500000004]
+module.project_eks.aws_iam_role_policy_attachment.cluster_AmazonEKSServicePolicy: Refreshing state... [id=app-udacity-eks-cluster-role-20220518174120040100000006]
+module.project_eks.aws_iam_role_policy_attachment.node_CloudWatchAgentServerPolicy: Refreshing state... [id=app-udacity-eks-node-role-20220518174120112200000007]
+module.project_eks.aws_iam_role_policy_attachment.node_AmazonEC2ContainerRegistryReadOnly: Refreshing state... [id=app-udacity-eks-node-role-20220518174120038300000005]
+module.project_alb.aws_lb_target_group.udacity: Refreshing state... [id=arn:aws:elasticloadbalancing:us-west-1:201412368106:targetgroup/udacity-lb-tg-w/efaeb5f4596bba45]
+module.project_eks.aws_iam_role_policy_attachment.node_AmazonEKSWorkerNodePolicy: Refreshing state... [id=app-udacity-eks-node-role-20220518174120032500000001]
+module.project_eks.aws_security_group.eks-cluster: Refreshing state... [id=sg-07c2430f776e6d6eb]
+module.project_ec2.aws_security_group.ec2_sg: Refreshing state... [id=sg-0354a61b29ea253cf]
+module.project_eks.aws_iam_role_policy_attachment.cluster_AmazonEKSClusterPolicy: Refreshing state... [id=app-udacity-eks-cluster-role-20220518174120034800000003]
+module.vpc.aws_vpc.this: Refreshing state... [id=vpc-04a06b069fdac16a5]
+module.project_eks.aws_eks_cluster.cluster: Refreshing state... [id=udacity-cluster]
+module.project_alb.aws_lb.udacity: Refreshing state... [id=arn:aws:elasticloadbalancing:us-west-1:201412368106:loadbalancer/app/udacity-lb-tf/8e83b6cfbed00462]
+module.project_ec2.aws_instance.ubuntu[0]: Refreshing state... [id=i-07693a92fadde0f57]
+module.project_ec2.aws_instance.ubuntu[1]: Refreshing state... [id=i-0227e47daa248c6ae]
+module.project_ec2.aws_instance.ubuntu[2]: Refreshing state... [id=i-0af410ba2874ec104]
+module.project_alb.aws_lb_listener.udacity: Refreshing state... [id=arn:aws:elasticloadbalancing:us-west-1:201412368106:listener/app/udacity-lb-tf/8e83b6cfbed00462/3be7290dbc0b152d]
+module.project_eks.aws_iam_role_policy_attachment.node_harmony_policy_attachment: Refreshing state... [id=app-udacity-eks-node-role-20220518174120119700000008]
+module.vpc.aws_internet_gateway.this[0]: Refreshing state... [id=igw-0634a06f3a8750e81]
+module.vpc.aws_route_table.private[0]: Refreshing state... [id=rtb-06ae33eb949bf625b]
+module.vpc.aws_route_table.private[1]: Refreshing state... [id=rtb-07708f247f75a6b6e]
+module.vpc.aws_subnet.private[0]: Refreshing state... [id=subnet-009f72f9216e160b7]
+module.vpc.aws_route_table.public[0]: Refreshing state... [id=rtb-0df313f190f071088]
+module.vpc.aws_subnet.public[0]: Refreshing state... [id=subnet-0f09c31bfe5df8dfa]
+module.project_eks.aws_eks_node_group.node: Refreshing state... [id=udacity-cluster:app-udacity-node-group]
+module.project_eks.aws_iam_role_policy_attachment.cluster_AmazonEKSCloudwatchPolicy: Refreshing state... [id=app-udacity-eks-node-role-20220518174120032900000002]
+module.vpc.aws_route.public_internet_gateway[0]: Refreshing state... [id=r-rtb-0df313f190f0710881080289494]
+module.vpc.aws_route.public_internet_gateway[1]: Refreshing state... [id=r-rtb-0df313f190f0710881080289494]
+kubernetes_namespace.udacity: Refreshing state... [id=udacity]
+kubernetes_service.grafana-external: Refreshing state... [id=monitoring/grafana-external]
+module.project_alb.aws_lb_target_group_attachment.udacity[1]: Refreshing state... [id=arn:aws:elasticloadbalancing:us-west-1:201412368106:targetgroup/udacity-lb-tg-w/efaeb5f4596bba45-2022051817413574220000000a]
+module.project_alb.aws_lb_target_group_attachment.udacity[0]: Refreshing state... [id=arn:aws:elasticloadbalancing:us-west-1:201412368106:targetgroup/udacity-lb-tg-w/efaeb5f4596bba45-20220518174135622900000009]
+
+Note: Objects have changed outside of Terraform
+
+Terraform detected the following changes made outside of Terraform since the last "terraform apply":
+
+  # kubernetes_service.grafana-external has changed
+  ~ resource "kubernetes_service" "grafana-external" {
+        id                     = "monitoring/grafana-external"
+        # (2 unchanged attributes hidden)
+
+      ~ metadata {
+          + labels           = {}
+            name             = "grafana-external"
+            # (5 unchanged attributes hidden)
+        }
+
+      ~ spec {
+          + external_ips                = []
+          + load_balancer_source_ranges = []
+            # (9 unchanged attributes hidden)
+
+            # (1 unchanged block hidden)
+        }
+    }
+
+
+Unless you have made equivalent changes to your configuration, or ignored the relevant attributes using ignore_changes, the following plan may include actions to undo or respond to these
+changes.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+  ~ update in-place
+-/+ destroy and then create replacement
+
+Terraform will perform the following actions:
+
+  # module.vpc.aws_eip.nat[0] will be updated in-place
+  ~ resource "aws_eip" "nat" {
+        id                   = "eipalloc-0e8af589d8f20dbde"
+      ~ tags                 = {
+          ~ "Name" = "udacity-project-us-west-1b" -> "udacity-project-us-west-1a"
+        }
+      ~ tags_all             = {
+          ~ "Name"      = "udacity-project-us-west-1b" -> "udacity-project-us-west-1a"
+            # (1 unchanged element hidden)
+        }
+        # (7 unchanged attributes hidden)
+    }
+
+  # module.vpc.aws_nat_gateway.this[0] will be created
+  + resource "aws_nat_gateway" "this" {
+      + allocation_id        = "eipalloc-0e8af589d8f20dbde"
+      + connectivity_type    = "public"
+      + id                   = (known after apply)
+      + network_interface_id = (known after apply)
+      + private_ip           = (known after apply)
+      + public_ip            = (known after apply)
+      + subnet_id            = (known after apply)
+      + tags                 = {
+          + "Name" = "udacity-project-us-west-1a"
+        }
+      + tags_all             = {
+          + "Name"      = "udacity-project-us-west-1a"
+          + "Terraform" = "true"
+        }
+    }
+
+  # module.vpc.aws_route.private_nat_gateway[0] will be created
+  + resource "aws_route" "private_nat_gateway" {
+      + destination_cidr_block = "0.0.0.0/0"
+      + id                     = (known after apply)
+      + instance_id            = (known after apply)
+      + instance_owner_id      = (known after apply)
+      + nat_gateway_id         = (known after apply)
+      + network_interface_id   = (known after apply)
+      + origin                 = (known after apply)
+      + route_table_id         = "rtb-06ae33eb949bf625b"
+      + state                  = (known after apply)
+
+      + timeouts {
+          + create = "5m"
+        }
+    }
+
+  # module.vpc.aws_route.private_nat_gateway[1] will be created
+  + resource "aws_route" "private_nat_gateway" {
+      + destination_cidr_block = "0.0.0.0/0"
+      + id                     = (known after apply)
+      + instance_id            = (known after apply)
+      + instance_owner_id      = (known after apply)
+      + nat_gateway_id         = (known after apply)
+      + network_interface_id   = (known after apply)
+      + origin                 = (known after apply)
+      + route_table_id         = "rtb-07708f247f75a6b6e"
+      + state                  = (known after apply)
+
+      + timeouts {
+          + create = "5m"
+        }
+    }
+
+  # module.vpc.aws_route_table.private[0] will be updated in-place
+  ~ resource "aws_route_table" "private" {
+        id               = "rtb-06ae33eb949bf625b"
+      ~ tags             = {
+          ~ "Name" = "udacity-project-private-us-west-1b" -> "udacity-project-private-us-west-1a"
+        }
+      ~ tags_all         = {
+          ~ "Name"      = "udacity-project-private-us-west-1b" -> "udacity-project-private-us-west-1a"
+            # (1 unchanged element hidden)
+        }
+        # (5 unchanged attributes hidden)
+    }
+
+  # module.vpc.aws_route_table.private[1] will be updated in-place
+  ~ resource "aws_route_table" "private" {
+        id               = "rtb-07708f247f75a6b6e"
+      ~ tags             = {
+          ~ "Name" = "udacity-project-private-us-west-1c" -> "udacity-project-private-us-west-1b"
+        }
+      ~ tags_all         = {
+          ~ "Name"      = "udacity-project-private-us-west-1c" -> "udacity-project-private-us-west-1b"
+            # (1 unchanged element hidden)
+        }
+        # (5 unchanged attributes hidden)
+    }
+
+  # module.vpc.aws_route_table_association.private[0] will be created
+  + resource "aws_route_table_association" "private" {
+      + id             = (known after apply)
+      + route_table_id = "rtb-06ae33eb949bf625b"
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.private[1] will be created
+  + resource "aws_route_table_association" "private" {
+      + id             = (known after apply)
+      + route_table_id = "rtb-07708f247f75a6b6e"
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.public[0] will be created
+  + resource "aws_route_table_association" "public" {
+      + id             = (known after apply)
+      + route_table_id = "rtb-0df313f190f071088"
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.public[1] will be created
+  + resource "aws_route_table_association" "public" {
+      + id             = (known after apply)
+      + route_table_id = "rtb-0df313f190f071088"
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.private[0] must be replaced
+-/+ resource "aws_subnet" "private" {
+      ~ arn                                            = "arn:aws:ec2:us-west-1:201412368106:subnet/subnet-009f72f9216e160b7" -> (known after apply)
+      ~ availability_zone                              = "us-west-1b" -> "us-west-1a" # forces replacement
+      ~ availability_zone_id                           = "usw1-az1" -> (known after apply)
+      ~ id                                             = "subnet-009f72f9216e160b7" -> (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      - map_customer_owned_ip_on_launch                = false -> null
+      ~ owner_id                                       = "201412368106" -> (known after apply)
+      ~ private_dns_hostname_type_on_launch            = "ip-name" -> (known after apply)
+      ~ tags                                           = {
+          ~ "Name"                            = "udacity-project-private-us-west-1b" -> "udacity-project-private-us-west-1a"
+            # (1 unchanged element hidden)
+        }
+      ~ tags_all                                       = {
+          ~ "Name"                            = "udacity-project-private-us-west-1b" -> "udacity-project-private-us-west-1a"
+            # (2 unchanged elements hidden)
+        }
+        # (8 unchanged attributes hidden)
+    }
+
+  # module.vpc.aws_subnet.private[1] will be created
+  + resource "aws_subnet" "private" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "us-west-1b"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.100.2.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Name"                            = "udacity-project-private-us-west-1b"
+          + "kubernetes.io/role/internal-elb" = "1"
+        }
+      + tags_all                                       = {
+          + "Name"                            = "udacity-project-private-us-west-1b"
+          + "Terraform"                       = "true"
+          + "kubernetes.io/role/internal-elb" = "1"
+        }
+      + vpc_id                                         = "vpc-04a06b069fdac16a5"
+    }
+
+  # module.vpc.aws_subnet.public[0] must be replaced
+-/+ resource "aws_subnet" "public" {
+      ~ arn                                            = "arn:aws:ec2:us-west-1:201412368106:subnet/subnet-0f09c31bfe5df8dfa" -> (known after apply)
+      ~ availability_zone                              = "us-west-1b" -> "us-west-1a" # forces replacement
+      ~ availability_zone_id                           = "usw1-az1" -> (known after apply)
+      ~ id                                             = "subnet-0f09c31bfe5df8dfa" -> (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      - map_customer_owned_ip_on_launch                = false -> null
+      ~ owner_id                                       = "201412368106" -> (known after apply)
+      ~ private_dns_hostname_type_on_launch            = "ip-name" -> (known after apply)
+      ~ tags                                           = {
+          ~ "Name"                   = "udacity-project-public-us-west-1b" -> "udacity-project-public-us-west-1a"
+            # (1 unchanged element hidden)
+        }
+      ~ tags_all                                       = {
+          ~ "Name"                   = "udacity-project-public-us-west-1b" -> "udacity-project-public-us-west-1a"
+            # (2 unchanged elements hidden)
+        }
+        # (8 unchanged attributes hidden)
+    }
+
+  # module.vpc.aws_subnet.public[1] will be created
+  + resource "aws_subnet" "public" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "us-west-1b"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.100.11.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = true
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + tags                                           = {
+          + "Name"                   = "udacity-project-public-us-west-1b"
+          + "kubernetes.io/role/elb" = "1"
+        }
+      + tags_all                                       = {
+          + "Name"                   = "udacity-project-public-us-west-1b"
+          + "Terraform"              = "true"
+          + "kubernetes.io/role/elb" = "1"
+        }
+      + vpc_id                                         = "vpc-04a06b069fdac16a5"
+    }
+
+Plan: 11 to add, 3 to change, 2 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+module.vpc.aws_subnet.private[0]: Destroying... [id=subnet-009f72f9216e160b7]
+module.vpc.aws_subnet.public[0]: Destroying... [id=subnet-0f09c31bfe5df8dfa]
+module.vpc.aws_subnet.public[1]: Creating...
+module.vpc.aws_subnet.private[1]: Creating...
+module.vpc.aws_route_table.private[1]: Modifying... [id=rtb-07708f247f75a6b6e]
+module.vpc.aws_eip.nat[0]: Modifying... [id=eipalloc-0e8af589d8f20dbde]
+module.vpc.aws_route_table.private[0]: Modifying... [id=rtb-06ae33eb949bf625b]
+module.vpc.aws_eip.nat[0]: Modifications complete after 0s [id=eipalloc-0e8af589d8f20dbde]
+module.vpc.aws_route_table.private[0]: Modifications complete after 0s [id=rtb-06ae33eb949bf625b]
+module.vpc.aws_route_table.private[1]: Modifications complete after 0s [id=rtb-07708f247f75a6b6e]
+module.vpc.aws_subnet.private[0]: Destruction complete after 0s
+module.vpc.aws_subnet.private[0]: Creating...
+module.vpc.aws_subnet.public[0]: Destruction complete after 0s
+module.vpc.aws_subnet.public[0]: Creating...
+module.vpc.aws_subnet.private[1]: Creation complete after 1s [id=subnet-0524a7cca6e257533]
+module.vpc.aws_subnet.private[0]: Creation complete after 1s [id=subnet-0394cd128713e79d4]
+module.vpc.aws_route_table_association.private[0]: Creating...
+module.vpc.aws_route_table_association.private[1]: Creating...
+module.vpc.aws_route_table_association.private[0]: Creation complete after 0s [id=rtbassoc-08e5e42ae42522c5a]
+module.vpc.aws_route_table_association.private[1]: Creation complete after 0s [id=rtbassoc-023f82fe1ce8403fb]
+module.vpc.aws_subnet.public[1]: Still creating... [10s elapsed]
+module.vpc.aws_subnet.public[0]: Still creating... [10s elapsed]
+module.vpc.aws_subnet.public[1]: Creation complete after 11s [id=subnet-027144375d231eaf8]
+module.vpc.aws_subnet.public[0]: Creation complete after 11s [id=subnet-0446c09101e193d64]
+module.vpc.aws_route_table_association.public[0]: Creating...
+module.vpc.aws_route_table_association.public[1]: Creating...
+module.vpc.aws_nat_gateway.this[0]: Creating...
+module.vpc.aws_route_table_association.public[0]: Creation complete after 1s [id=rtbassoc-02d58e9416834a945]
+module.vpc.aws_route_table_association.public[1]: Creation complete after 1s [id=rtbassoc-0713bdeea8d7ffc39]
+module.vpc.aws_nat_gateway.this[0]: Still creating... [10s elapsed]
+module.vpc.aws_nat_gateway.this[0]: Still creating... [20s elapsed]
+module.vpc.aws_nat_gateway.this[0]: Still creating... [30s elapsed]
+module.vpc.aws_nat_gateway.this[0]: Still creating... [40s elapsed]
+module.vpc.aws_nat_gateway.this[0]: Still creating... [50s elapsed]
+module.vpc.aws_nat_gateway.this[0]: Still creating... [1m0s elapsed]
+module.vpc.aws_nat_gateway.this[0]: Still creating... [1m10s elapsed]
+module.vpc.aws_nat_gateway.this[0]: Still creating... [1m20s elapsed]
+module.vpc.aws_nat_gateway.this[0]: Still creating... [1m30s elapsed]
+module.vpc.aws_nat_gateway.this[0]: Still creating... [1m40s elapsed]
+module.vpc.aws_nat_gateway.this[0]: Still creating... [1m50s elapsed]
+module.vpc.aws_nat_gateway.this[0]: Still creating... [2m0s elapsed]
+module.vpc.aws_nat_gateway.this[0]: Creation complete after 2m6s [id=nat-04501d1b6eb5f3a4b]
+module.vpc.aws_route.private_nat_gateway[0]: Creating...
+module.vpc.aws_route.private_nat_gateway[1]: Creating...
+module.vpc.aws_route.private_nat_gateway[1]: Creation complete after 0s [id=r-rtb-07708f247f75a6b6e1080289494]
+module.vpc.aws_route.private_nat_gateway[0]: Creation complete after 0s [id=r-rtb-06ae33eb949bf625b1080289494]
+
+Apply complete! Resources: 11 added, 3 changed, 2 destroyed.
+
+Outputs:
+
+account_id = "201412368106"
+caller_arn = "arn:aws:sts::201412368106:assumed-role/voclabs/user1832834=bc7e946c-6f1b-11ec-bd64-8f63e5bad355"
+caller_user = "AROAS5ZI423VLWO7JDJR6:user1832834=bc7e946c-6f1b-11ec-bd64-8f63e5bad355"
+[cloudshell-user@ip-10-0-188-204 zone2]$ 
+
